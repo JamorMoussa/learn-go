@@ -14,20 +14,7 @@ type todo struct {
 
 var todos []todo = make([]todo, 0)
 
-func getTodosHandler(rw http.ResponseWriter, r *http.Request) {
-
-	if r.Method == http.MethodGet {
-
-		res, err := json.Marshal(todos)
-
-		if err != nil {
-			rw.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		rw.Header().Add("Content-Type", "text/json")
-		rw.Write(res)
-	}
+func addTodoHandler(rw http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodPost {
 
@@ -46,6 +33,22 @@ func getTodosHandler(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func getTodosHandler(rw http.ResponseWriter, r *http.Request) {
+
+	if r.Method == http.MethodGet {
+
+		res, err := json.Marshal(todos)
+
+		if err != nil {
+			rw.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		rw.Header().Add("Content-Type", "text/json")
+		rw.Write(res)
+	}
+}
+
 func main() {
 
 	todos = append(todos, todo{
@@ -56,8 +59,8 @@ func main() {
 	// Get all Todos : GET /api/todos
 	http.HandleFunc("/api/todos", getTodosHandler)
 
-	// Psot new todo: POST /api/todo {Body}
-	//http.HandleFunc("api/post")
+	// Post new todo: POST /api/add {Body}
+	http.HandleFunc("/api/add", addTodoHandler)
 
 	err := http.ListenAndServe("0.0.0.0:8080", nil)
 
